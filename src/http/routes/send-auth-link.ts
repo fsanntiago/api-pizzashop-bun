@@ -47,7 +47,7 @@ export const sendAuthLink = new Elysia().post(
     // Email test
     // console.log(nodemailer.getTestMessageUrl(info))
 
-    console.log(authLink)
+    console.log(authLink.toString())
   },
   {
     body: t.Object({
