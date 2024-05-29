@@ -36,6 +36,13 @@
       "when": 1716819340211,
       "tag": "0004_curly_cerise",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1716982132830,
+      "tag": "0005_known_goblin_queen",
+      "breakpoints": true
     }
   ]
 }
