@@ -18,8 +18,11 @@ export const cancelOrder = new Elysia().use(authentication).patch(
     }
 
     const order = await db.query.orders.findFirst({
-      where(fields, { eq }) {
-        return eq(fields.id, orderId)
+      where(fields, { eq, and }) {
+        return and(
+          eq(fields.restaurantId, restaurantId),
+          eq(fields.id, orderId),
+        )
       },
     })
 
