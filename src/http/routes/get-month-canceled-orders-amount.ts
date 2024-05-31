@@ -9,52 +9,61 @@ import { UnauthorizedError } from '../errors/unauthorized-error'
 
 export const getMonthCanceledOrdersAmount = new Elysia()
   .use(authentication)
-  .get('/metrics/month-canceled-orders-amount', async ({ getCurrentUser }) => {
-    const { restaurantId } = await getCurrentUser()
+  .get(
+    '/metrics/month-canceled-orders-amount',
+    async ({ getCurrentUser }) => {
+      const { restaurantId } = await getCurrentUser()
 
-    if (!restaurantId) {
-      throw new UnauthorizedError()
-    }
+      if (!restaurantId) {
+        throw new UnauthorizedError()
+      }
 
-    const today = dayjs()
-    const lastMonth = today.subtract(1, 'month')
-    const startOfLastMonth = lastMonth.startOf('month')
+      const today = dayjs()
+      const lastMonth = today.subtract(1, 'month')
+      const startOfLastMonth = lastMonth.startOf('month')
 
-    const orderPerMonth = await db
-      .select({
-        monthWithYear: sql<string>`TO_CHAR(${orders.createdAt}, 'YYYY-MM')`,
-        amount: count(),
-      })
-      .from(orders)
-      .where(
-        and(
-          eq(orders.restaurantId, restaurantId),
-          eq(orders.status, 'canceled'),
-          gte(orders.createdAt, startOfLastMonth.toDate()),
-        ),
+      const orderPerMonth = await db
+        .select({
+          monthWithYear: sql<string>`TO_CHAR(${orders.createdAt}, 'YYYY-MM')`,
+          amount: count(),
+        })
+        .from(orders)
+        .where(
+          and(
+            eq(orders.restaurantId, restaurantId),
+            eq(orders.status, 'canceled'),
+            gte(orders.createdAt, startOfLastMonth.toDate()),
+          ),
+        )
+        .groupBy(sql`TO_CHAR(${orders.createdAt}, 'YYYY-MM')`)
+
+      const currentMonthWithYear = today.format('YYYY-MM')
+      const lastMonthWithYear = lastMonth.format('YYYY-MM')
+
+      const currentMonthOrdersAmount = orderPerMonth.find(
+        (orderPerMonth) => orderPerMonth.monthWithYear === currentMonthWithYear,
       )
-      .groupBy(sql`TO_CHAR(${orders.createdAt}, 'YYYY-MM')`)
 
-    const currentMonthWithYear = today.format('YYYY-MM')
-    const lastMonthWithYear = lastMonth.format('YYYY-MM')
+      const lastMonthOrdersAmount = orderPerMonth.find(
+        (orderPerMonth) => orderPerMonth.monthWithYear === lastMonthWithYear,
+      )
 
-    const currentMonthOrdersAmount = orderPerMonth.find(
-      (orderPerMonth) => orderPerMonth.monthWithYear === currentMonthWithYear,
-    )
+      const diffFromLastMonth =
+        currentMonthOrdersAmount && lastMonthOrdersAmount
+          ? (currentMonthOrdersAmount.amount * 100) /
+            lastMonthOrdersAmount.amount
+          : null
 
-    const lastMonthOrdersAmount = orderPerMonth.find(
-      (orderPerMonth) => orderPerMonth.monthWithYear === lastMonthWithYear,
-    )
-
-    const diffFromLastMonth =
-      currentMonthOrdersAmount && lastMonthOrdersAmount
-        ? (currentMonthOrdersAmount.amount * 100) / lastMonthOrdersAmount.amount
-        : null
-
-    return {
-      amount: currentMonthOrdersAmount?.amount,
-      diffFromLastMonth: diffFromLastMonth
-        ? Number((diffFromLastMonth - 100).toFixed(2))
-        : 0,
-    }
-  })
+      return {
+        amount: currentMonthOrdersAmount?.amount,
+        diffFromLastMonth: diffFromLastMonth
+          ? Number((diffFromLastMonth - 100).toFixed(2))
+          : 0,
+      }
+    },
+    {
+      detail: {
+        tags: ['Metrics'],
+      },
+    },
+  )

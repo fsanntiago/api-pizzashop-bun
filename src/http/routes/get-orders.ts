@@ -67,11 +67,15 @@ export const getOrders = new Elysia().use(authentication).get(
     }
   },
   {
+    // response: orders.$inferSelect,
     query: t.Object({
       customerName: t.Optional(t.String()),
       orderId: t.Optional(t.String()),
       status: t.Optional(createSelectSchema(orders).properties.status),
       pageIndex: t.Numeric({ minimum: 0 }),
     }),
+    detail: {
+      tags: ['Orders'],
+    },
   },
 )

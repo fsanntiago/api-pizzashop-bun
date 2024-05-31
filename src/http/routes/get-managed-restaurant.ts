@@ -3,9 +3,9 @@ import Elysia from 'elysia'
 import { db } from '../../db/connection'
 import { authentication } from '../authentication'
 
-export const getManagedRestaurant = new Elysia()
-  .use(authentication)
-  .get('/managed-restaurant', async ({ getCurrentUser }) => {
+export const getManagedRestaurant = new Elysia().use(authentication).get(
+  '/managed-restaurant',
+  async ({ getCurrentUser }) => {
     const { restaurantId } = await getCurrentUser()
 
     if (!restaurantId) {
@@ -19,4 +19,20 @@ export const getManagedRestaurant = new Elysia()
     })
 
     return { managedRestaurant }
-  })
+  },
+  {
+    detail: {
+      tags: ['Metrics'],
+      responses: {
+        200: {
+          description: 'OK',
+          content: {
+            'application/json': {
+              schema: {},
+            },
+          },
+        },
+      },
+    },
+  },
+)

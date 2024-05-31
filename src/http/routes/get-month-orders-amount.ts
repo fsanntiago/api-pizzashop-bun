@@ -7,9 +7,9 @@ import { orders } from '../../db/schema'
 import { authentication } from '../authentication'
 import { UnauthorizedError } from '../errors/unauthorized-error'
 
-export const getMonthOrdersAmount = new Elysia()
-  .use(authentication)
-  .get('/metrics/month-orders-amount', async ({ getCurrentUser }) => {
+export const getMonthOrdersAmount = new Elysia().use(authentication).get(
+  '/metrics/month-orders-amount',
+  async ({ getCurrentUser }) => {
     const { restaurantId } = await getCurrentUser()
 
     if (!restaurantId) {
@@ -56,4 +56,10 @@ export const getMonthOrdersAmount = new Elysia()
         ? Number((diffFromLastMonth - 100).toFixed(2))
         : 0,
     }
-  })
+  },
+  {
+    detail: {
+      tags: ['Metrics'],
+    },
+  },
+)

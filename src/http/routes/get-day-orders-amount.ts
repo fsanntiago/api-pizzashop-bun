@@ -7,9 +7,9 @@ import { orders } from '../../db/schema'
 import { authentication } from '../authentication'
 import { UnauthorizedError } from '../errors/unauthorized-error'
 
-export const getDayOrdersAmount = new Elysia()
-  .use(authentication)
-  .get('/metrics/day-orders-amount', async ({ getCurrentUser }) => {
+export const getDayOrdersAmount = new Elysia().use(authentication).get(
+  '/metrics/day-orders-amount',
+  async ({ getCurrentUser }) => {
     const { restaurantId } = await getCurrentUser()
 
     if (!restaurantId) {
@@ -58,4 +58,10 @@ export const getDayOrdersAmount = new Elysia()
         ? Number((diffFromYesterday - 100).toFixed(2))
         : 0,
     }
-  })
+  },
+  {
+    detail: {
+      tags: ['Metrics'],
+    },
+  },
+)

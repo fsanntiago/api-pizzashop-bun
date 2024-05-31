@@ -74,5 +74,8 @@ export const getDailyRevenueInPeriod = new Elysia().use(authentication).get(
       from: t.Optional(t.String()),
       to: t.Optional(t.String()),
     }),
+    detail: {
+      tags: ['Metrics'],
+    },
   },
 )

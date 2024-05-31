@@ -1,4 +1,5 @@
 import cors from '@elysiajs/cors'
+import swagger from '@elysiajs/swagger'
 import { Elysia } from 'elysia'
 
 import { authentication } from './authentication'
@@ -22,6 +23,21 @@ import { sendAuthLink } from './routes/send-auth-link'
 import { signOut } from './routes/sign-out'
 
 const app = new Elysia()
+  .use(
+    swagger({
+      documentation: {
+        info: {
+          title: 'Pizza Shop API Documentation',
+          version: '1.0.0',
+        },
+        tags: [
+          { name: 'Auth', description: '' },
+          { name: 'Metrics', description: '' },
+          { name: 'Orders', description: '' },
+        ],
+      },
+    }),
+  )
   .use(
     cors({
       credentials: true,

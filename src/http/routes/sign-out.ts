@@ -7,5 +7,10 @@ export const signOut = new Elysia().use(authentication).post(
   async ({ signOut: internalSignOut }) => {
     internalSignOut()
   },
-  authCookieSchema,
+  {
+    ...authCookieSchema,
+    detail: {
+      tags: ['Auth'],
+    },
+  },
 )

@@ -51,5 +51,8 @@ export const authenticateFromLink = new Elysia().use(authentication).get(
       redirect: t.String(),
     }),
     ...authCookieSchema,
+    detail: {
+      tags: ['Auth'],
+    },
   },
 )
