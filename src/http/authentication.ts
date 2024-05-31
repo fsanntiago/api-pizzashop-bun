@@ -62,5 +62,18 @@ export const authentication = new Elysia()
       },
     }
   })
+  .derive({ as: 'scoped' }, ({ getCurrentUser }) => {
+    return {
+      getManagedRestaurantId: async () => {
+        const { restaurantId } = await getCurrentUser()
+
+        if (!restaurantId) {
+          throw new UnauthorizedError()
+        }
+
+        return restaurantId
+      },
+    }
+  })
 
 // const ae = new Elysia().derive({ as: 'scoped' }, () => ({ sub: 'hi' }))

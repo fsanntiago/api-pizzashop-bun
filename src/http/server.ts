@@ -24,6 +24,7 @@ import { registerRestaurant } from './routes/register-restaurant'
 import { sendAuthLink } from './routes/send-auth-link'
 import { signOut } from './routes/sign-out'
 import { updateMenu } from './routes/update-manu'
+import { updateProfile } from './routes/update-profile'
 
 const app = new Elysia()
   .use(
@@ -78,6 +79,7 @@ const app = new Elysia()
   .use(createEvaluation)
   .use(getEvaluations)
   .use(updateMenu)
+  .use(updateProfile)
   .onError(({ error, code, set }) => {
     switch (code) {
       case 'VALIDATION':
