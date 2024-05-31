@@ -1,5 +1,7 @@
+import cors from '@elysiajs/cors'
 import { Elysia } from 'elysia'
 
+import { authentication } from './authentication'
 import { approveOrder } from './routes/approve-order'
 import { authenticateFromLink } from './routes/authenticate-from-link'
 import { cancelOrder } from './routes/cancel-order'
@@ -20,6 +22,22 @@ import { sendAuthLink } from './routes/send-auth-link'
 import { signOut } from './routes/sign-out'
 
 const app = new Elysia()
+  .use(
+    cors({
+      credentials: true,
+      allowedHeaders: ['content-type'],
+      origin: (request): boolean => {
+        const origin = request.headers.get('origin')
+
+        if (!origin) {
+          return false
+        }
+
+        return true
+      },
+    }),
+  )
+  .use(authentication)
   .use(registerRestaurant)
   .use(sendAuthLink)
   .use(authenticateFromLink)
@@ -43,7 +61,9 @@ const app = new Elysia()
       case 'VALIDATION':
         set.status = error.status
         return error.toResponse()
-
+      case 'NOT_FOUND': {
+        return new Response(null, { status: 404 })
+      }
       default: {
         console.error(error)
 
