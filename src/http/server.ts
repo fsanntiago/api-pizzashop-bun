@@ -20,6 +20,7 @@ import { getOrderDetails } from './routes/get-order-details'
 import { getOrders } from './routes/get-orders'
 import { getPopularProducts } from './routes/get-popular-products'
 import { getProfile } from './routes/get-profile'
+import { registerCustomer } from './routes/register-customer'
 import { registerRestaurant } from './routes/register-restaurant'
 import { sendAuthLink } from './routes/send-auth-link'
 import { signOut } from './routes/sign-out'
@@ -80,6 +81,7 @@ const app = new Elysia()
   .use(getEvaluations)
   .use(updateMenu)
   .use(updateProfile)
+  .use(registerCustomer)
   .onError(({ error, code, set }) => {
     switch (code) {
       case 'VALIDATION':
