@@ -6,10 +6,12 @@ import { authentication } from './authentication'
 import { approveOrder } from './routes/approve-order'
 import { authenticateFromLink } from './routes/authenticate-from-link'
 import { cancelOrder } from './routes/cancel-order'
+import { createEvaluation } from './routes/create-evaluation'
 import { deliverOrder } from './routes/deliver-order'
 import { dispatchOrder } from './routes/dispatch-order'
 import { getDailyRevenueInPeriod } from './routes/get-daily-renevue-in-period'
 import { getDayOrdersAmount } from './routes/get-day-orders-amount'
+import { getEvaluations } from './routes/get-evaluation'
 import { getManagedRestaurant } from './routes/get-managed-restaurant'
 import { getMonthCanceledOrdersAmount } from './routes/get-month-canceled-orders-amount'
 import { getMonthOrdersAmount } from './routes/get-month-orders-amount'
@@ -21,6 +23,7 @@ import { getProfile } from './routes/get-profile'
 import { registerRestaurant } from './routes/register-restaurant'
 import { sendAuthLink } from './routes/send-auth-link'
 import { signOut } from './routes/sign-out'
+import { updateMenu } from './routes/update-manu'
 
 const app = new Elysia()
   .use(
@@ -72,6 +75,9 @@ const app = new Elysia()
   .use(getMonthCanceledOrdersAmount)
   .use(getPopularProducts)
   .use(getDailyRevenueInPeriod)
+  .use(createEvaluation)
+  .use(getEvaluations)
+  .use(updateMenu)
   .onError(({ error, code, set }) => {
     switch (code) {
       case 'VALIDATION':
