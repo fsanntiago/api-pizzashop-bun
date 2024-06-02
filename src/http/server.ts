@@ -2,6 +2,7 @@ import cors from '@elysiajs/cors'
 import swagger from '@elysiajs/swagger'
 import { Elysia } from 'elysia'
 
+import { env } from '../env'
 import { authentication } from './authentication'
 import { approveOrder } from './routes/approve-order'
 import { authenticateFromLink } from './routes/authenticate-from-link'
@@ -47,6 +48,7 @@ const app = new Elysia()
     cors({
       credentials: true,
       allowedHeaders: ['content-type'],
+      methods: ['GET', 'PUT', 'POST'],
       origin: (request): boolean => {
         const origin = request.headers.get('origin')
 
@@ -54,7 +56,11 @@ const app = new Elysia()
           return false
         }
 
-        return true
+        const allowedOrigins = JSON.parse(
+          env.ALLOWED_DOMAINS || '[]',
+        ) as string[]
+
+        return allowedOrigins.includes(origin)
       },
     }),
   )
