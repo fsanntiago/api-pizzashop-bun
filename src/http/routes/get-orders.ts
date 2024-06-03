@@ -23,7 +23,7 @@ export const getOrders = new Elysia().use(authentication).get(
         createdAt: orders.createdAt,
         status: orders.status,
         total: orders.totalInCents,
-        customName: users.name,
+        customerName: users.name,
       })
       .from(orders)
       .innerJoin(users, eq(users.id, orders.customerId))
