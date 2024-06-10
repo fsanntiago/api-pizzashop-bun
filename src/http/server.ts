@@ -48,7 +48,7 @@ const app = new Elysia()
     cors({
       credentials: true,
       allowedHeaders: ['content-type'],
-      methods: ['GET', 'PUT', 'POST', 'PATCH'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
       origin: (request): boolean => {
         const origin = request.headers.get('origin')
 
@@ -97,9 +97,9 @@ const app = new Elysia()
         return new Response(null, { status: 404 })
       }
       default: {
-        console.error(error)
-
-        return new Response(null, { status: 500 })
+        console.error('Server Error:', error)
+        set.status = 500
+        return { code: 'SERVER_ERROR', message: 'Internal server error' }
       }
     }
   })
