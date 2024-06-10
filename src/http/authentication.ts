@@ -14,7 +14,7 @@ const jwtPayload = t.Object({
 
 export const authentication = new Elysia()
   .error({ UNAUTHORIZED: UnauthorizedError })
-  .onError(({ error, code, set }) => {
+  .onError({ as: 'scoped' }, ({ error, code, set }) => {
     switch (code) {
       case 'UNAUTHORIZED':
         set.status = 401
@@ -47,9 +47,7 @@ export const authentication = new Elysia()
       },
 
       getCurrentUser: async () => {
-        const authCookie = auth.value
-
-        const payload = await jwt.verify(authCookie)
+        const payload = await jwt.verify(auth.value)
 
         if (!payload) {
           throw new UnauthorizedError()
